@@ -1,0 +1,1 @@
+# Identity module for brand and category information

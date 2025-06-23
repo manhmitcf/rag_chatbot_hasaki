@@ -1,7 +1,30 @@
-qdrant-client==1.7.0
-google-generativeai==0.3.2
+# Core Dependencies
 python-dotenv==1.0.0
-sentence-transformers==2.2.2
-torch>=2.0.0
+
+# AI/ML Libraries
+google-generativeai==0.3.2
+sentence-transformers>=3.0.0
 transformers>=4.30.0
+torch>=2.0.0
 numpy>=1.24.0
+
+# Vector Database
+qdrant-client>=1.6.0,<1.7.0
+
+# Reranking Model Dependencies
+accelerate>=0.20.0
+tokenizers>=0.13.0
+safetensors>=0.3.0
+
+# Utility Libraries
+typing-extensions>=4.5.0
+tqdm>=4.65.0
+requests>=2.31.0
+
+# Development Dependencies (Optional)
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
+
+# System Dependencies
+psutil>=5.9.0

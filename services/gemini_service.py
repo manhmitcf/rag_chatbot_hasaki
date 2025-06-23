@@ -18,7 +18,7 @@ class GeminiService:
             context = self._build_context(context_documents)
             
             # Tạo prompt
-            prompt = self.build_prompt(query, context)
+            prompt = self._build_prompt(query, context)
             
             # Generate response
             response = self.model.generate_content(prompt)
@@ -29,35 +29,88 @@ class GeminiService:
     
     
     def _build_context(self, search_results):
-        """Prepare context from search results"""
+        """Prepare context from search results với metadata chi tiết và payload data đầy đủ"""
         if not search_results:
             return "Không tìm thấy thông tin sản phẩm phù hợp."
         
         context_parts = []
         
-        for result in search_results:
-            payload = result.payload
+        for idx, result in enumerate(search_results, 1):
+            # Lấy metadata từ result dictionary
+            metadata = result.get('metadata', {})
+            rerank_metadata = result.get('rerank_metadata', {})
+            
+            # Thông tin cơ bản về sản phẩm với payload data đầy đủ
             product_info = f"""
-                            Sản phẩm ID: {payload.get('product_id', 'N/A')}
-                            Tên của sản phẩm: {payload.get('product_name', 'N/A')}
-                            Tên tiếng anh của sản phẩm: {payload.get('english_name', 'N/A')}
-                            Giá: {payload.get('price', 'N/A')}
-                            Loại thông tin của đoạn chuck: {payload.get('type', 'N/A')}
-                            Thương hiệu của sản phẩm: {payload.get('brand', 'N/A')}
-                            Danh mục cảu sản phẩm: {payload.get('category_name', 'N/A')}
-                            Nội dung đoạn tìm kiếm được: {payload.get('text', 'N/A')}
-                            Độ liên quan của tìm kiếm: {result.score:.3f}
-                            """
+CHUNK #{idx}:
+=============
+📋 THÔNG TIN SẢN PHẨM CHI TIẾT:
+   • Sản phẩm ID: {metadata.get('product_id', 'N/A')}
+   • Tên sản phẩm: {metadata.get('name', 'N/A')}
+   • Tên tiếng Anh: {metadata.get('english_name', 'N/A')}
+   • Thương hiệu: {metadata.get('brand', 'N/A')}
+   • Danh mục: {metadata.get('category_name', 'N/A')}
+   • Dung tích/Phiên bản: {metadata.get('data_variant', 'N/A')}
+   • Giá hiện tại: {metadata.get('price', 'N/A')} VND
+   • Đánh giá trung bình: {metadata.get('average_rating', 'N/A')}/5
+   • Tổng số đánh giá: {metadata.get('total_rating', 'N/A')} lượt
+   • Số lượng đã bán: {metadata.get('item_count_by', 'N/A')}
+   • Loại thông tin chunk: {metadata.get('type', 'N/A')}
+
+📊 ĐIỂM SỐ TÌM KIẾM & RERANKING:
+   • Vector Score (tìm kiếm ban đầu): {result.get('vector_score', result.get('score', 0)):.4f}
+   • Rerank Score (sau khi rerank): {result.get('rerank_score', result.get('score', 0)):.4f}
+   • Độ cải thiện từ reranking: {rerank_metadata.get('score_improvement', 0):+.4f}
+   • Thứ hạng cuối cùng: #{rerank_metadata.get('final_rank', idx)}
+   • Thay đổi thứ hạng: {rerank_metadata.get('rank_change', 0):+d} vị trí
+
+📝 NỘI DUNG CHUNK:
+{result.get('text', 'N/A')}
+
+🔍 ENRICHED CONTENT (được sử dụng trong reranking):
+{self._create_enriched_preview(result)}
+"""
             context_parts.append(product_info)
         
-        return "\n" + "="*50 + "\n".join(context_parts)
+        return "\n" + "="*80 + "\n".join(context_parts) + "\n" + "="*80
+    
+    def _create_enriched_preview(self, result: Dict[str, Any]) -> str:
+        """Tạo preview của enriched content được sử dụng trong reranking"""
+        try:
+            metadata = result.get('metadata', {})
+            text = result.get('text', '')
+            
+            # Tạo metadata context giống như trong reranker
+            metadata_parts = []
+            
+            if metadata.get('product_id'):
+                metadata_parts.append(f"Mã sản phẩm: {metadata['product_id']}")
+            if metadata.get('name'):
+                metadata_parts.append(f"Tên sản phẩm: {metadata['name']}")
+            if metadata.get('brand'):
+                metadata_parts.append(f"Thương hiệu: {metadata['brand']}")
+            if metadata.get('category_name'):
+                metadata_parts.append(f"Danh mục: {metadata['category_name']}")
+            if metadata.get('price'):
+                metadata_parts.append(f"Giá: {metadata['price']} VND")
+            
+            if metadata_parts:
+                metadata_context = " | ".join(metadata_parts)
+                preview = f"{metadata_context}\n\nNội dung: {text[:100]}..."
+            else:
+                preview = f"Nội dung: {text[:100]}..."
+            
+            return preview
+            
+        except Exception as e:
+            return f"Lỗi tạo preview: {e}"
     
     def _build_prompt(self, query: str, context: str) -> str:
         """Xây dựng prompt cho Gemini - tối ưu cho mỹ phẩm"""
         prompt = f"""
                 Bạn là một chuyên gia tư vấn mỹ phẩm, chăm sóc sắc đẹp thông minh. Hãy trả lời câu hỏi về mỹ phẩm, chăm sóc sắc đẹp, trả lời dựa trên thông tin sản phẩm được cung cấp.
 
-                THÔNG TIN TÌM THẤY ĐƯỢC:
+                THÔNG TIN TÌM THẤY ĐƯỢC (đã được rerank và enriched):
                 {context}
 
                 CÂU HỎI KHÁCH HÀNG: {query}
@@ -66,11 +119,12 @@ class GeminiService:
                 {self.get_conversation_context()[: self.conversation_history_length]}
 
                 Hướng dẫn trả lời:
-                - Trả lời dựa trên thông tin được cung cấp
-                - Tập trung vào ngữ cảnh phía trước và yêu cầu của khách hàng hiện tại dang hỏi gì
+                - Trả lời dựa trên thông tin được cung cấp (bao gồm cả metadata và enriched content)
+                - Tận dụng thông tin chi tiết về sản phẩm (ID, giá, đánh giá, thương hiệu, etc.)
+                - Tập trung vào ngữ cảnh phía trước và yêu cầu của khách hàng hiện tại
                 - Nếu thông tin không đủ để trả lời thì trả lời "Không tìm thấy"
                 - Trả lời bằng tiếng Việt, thân thiện và chuyên nghiệp
-               
+                - Sử dụng thông tin reranking score để ưu tiên chunks có độ liên quan cao hơn
 
                 TRẢ LỜI :
                 """
@@ -94,7 +148,7 @@ class GeminiService:
         - "Giá của kem chống nắng Anessa là bao nhiêu?" -> Intent: SPECIFIC_PRODUCT
         - "Sản phẩm này dùng thế nào?" -> Intent: SPECIFIC_PRODUCT
         - "Xin chào, bạn có khỏe không?" -> Intent: GENERAL_QUESTION
-        - "Bạn có thể gợi ý cho tôi một loại sữa rửa mặt không?" -> Intent: GENERAL_QUESTION
+        - "Bạn có th��� gợi ý cho tôi một loại sữa rửa mặt không?" -> Intent: GENERAL_QUESTION
         - "Cảm ơn shop đã tư vấn" -> Intent: GENERAL_QUESTION
         - "Các sản phẩm về sửa rửa mặt" -> Intent: GENERAL_QUESTION
         """
@@ -210,7 +264,7 @@ class GeminiService:
 
         CÁC TRƯỜNG CẦN LẤY:
         product_id: Mã định danh duy nhất của sản phẩm trong hệ thống cơ sở dữ liệu.
-        name_product: Tên sản phẩm bằng tiếng Việt.
+        name: Tên sản phẩm bằng tiếng Việt.
         english_name: Tên sản phẩm bằng tiếng Anh, hỗ trợ đa ngôn ngữ hoặc phục vụ các thị trường quốc tế.
         category_name: Tên danh mục sản phẩm, bằng tiếng Việt.
         brand: Tên thương hiệu của sản phẩm.
@@ -252,7 +306,7 @@ class GeminiService:
             str: Câu hỏi đã được tăng cường với ngữ cảnh từ lịch sử hội thoại
         """
     
-        # Nếu không có lịch sử hội thoại, trả về query gốc
+        # Nếu không có lịch sử h���i thoại, trả về query gốc
         if not self.conversation_history:
             return current_query
         
@@ -304,8 +358,6 @@ class GeminiService:
             print(f"Error enhancing query: {e}")
             return current_query
 
-
-
     def parse_enhanced_query(self, response_text):
         for line in response_text.splitlines():
             line = line.strip()
@@ -313,10 +365,3 @@ class GeminiService:
                 enhanced = line.split(":", 1)[1].strip()
                 return enhanced
         return None
-
-
-
-        
-
-
-        

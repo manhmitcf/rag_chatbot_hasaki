@@ -14,16 +14,16 @@ def print_banner():
     """In banner chào mừng"""
     banner = """
     ╔══════════════════════════════════════════════════════════════╗
-    ║                    🌸 HASAKI RAG CHATBOT 🌸                  ║
-    ║                  Tư vấn mỹ phẩm thông minh                   ║
-    ╠══════════════════════════════════════════════════════════════╣
-    ║  💄 Hỏi về sản phẩm mỹ phẩm                                 ║
-    ║  🧴 Tư vấn chăm sóc da                                      ║
-    ║  💅 Gợi ý sản phẩm phù hợp                                  ║
-    ║                                                              ║
-    ║  Gõ 'exit' hoặc 'quit' để thoát                            ║
-    ║  Gõ 'clear' để xóa màn hình                                ║
-    ║  Gõ 'help' để xem hướng dẫn                                ║
+                        🌸 HASAKI RAG CHATBOT 🌸                 
+                                 
+    ╠══════════════════════════════════════════════════════════════
+    ║  💄 Hỏi về sản phẩm mỹ phẩm                                 
+    ║  🧴 Tư vấn chăm sóc da                                      
+    ║  💅 Gợi ý sản phẩm phù hợp                                  
+    ║                                                              
+    ║  Gõ 'exit' hoặc 'quit' để thoát                              
+    ║  Gõ 'clear' để xóa màn hình                                  
+    ║  Gõ 'help' để xem hướng dẫn                                  
     ╚══════════════════════════════════════════════════════════════╝
     """
     print(banner)

@@ -92,7 +92,7 @@ class QdrantService:
                             FieldCondition(key=actual_field, match=MatchAny(any=filtered_values))
                         )
             else:
-                # Xử lý giá trị đơn giản - chuy���n thành dạng "in" với một phần tử
+                # Xử lý giá trị đơn giản - chuyển thành dạng "in" với một phần tử
                 # Chỉ thêm nếu giá trị không phải None hoặc rỗng
                 if value is not None and value != "":
                     conditions.append(

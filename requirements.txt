@@ -21,6 +21,12 @@ typing-extensions>=4.5.0
 tqdm>=4.65.0
 requests>=2.31.0
 
+# Web Framework
+fastapi>=0.104.0
+uvicorn>=0.24.0
+streamlit>=1.28.0
+pyngrok>=7.0.0
+
 # Development Dependencies (Optional)
 pytest>=7.4.0
 black>=23.0.0

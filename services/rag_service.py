@@ -30,28 +30,28 @@ class RAGService:
             # Nếu có rerank, lấy nhiều documents hơn để rerank
             search_limit = top_k * 2 if self.use_rerank and self.rerank_service else top_k
             
-            print(f"🔍 Tìm kiếm với filters: {filters}")
+            print(f"Tìm kiếm với filters: {filters}")
             relevant_docs = self.qdrant_service.search_similar(
                 query=question, 
                 limit=search_limit, 
                 filters=filters
             )
             
-            print(f"📊 Tìm thấy {len(relevant_docs)} documents từ vector search")
+            print(f"Tìm thấy {len(relevant_docs)} documents từ vector search")
             
             # Nếu không tìm thấy documents với filter, thử lại không filter
             if not relevant_docs and filters:
-                print("⚠️ Không tìm thấy với filter, thử tìm kiếm không filter...")
+                print("Không tìm thấy với filter, thử tìm kiếm không filter...")
                 relevant_docs = self.qdrant_service.search_similar(
                     query=question, 
                     limit=search_limit, 
                     filters=None
                 )
-                print(f"📊 Tìm thấy {len(relevant_docs)} documents không filter")
+                print(f"Tìm thấy {len(relevant_docs)} documents không filter")
             
             # Áp dụng reranking nếu có
             if self.use_rerank and self.rerank_service and relevant_docs:
-                print(f"🎯 Áp dụng reranking cho {len(relevant_docs)} documents...")
+                print(f"Áp dụng reranking cho {len(relevant_docs)} documents...")
                 
                 # Xác định số lượng documents sau rerank
                 final_top_k = rerank_top_k if rerank_top_k is not None else top_k
@@ -64,7 +64,7 @@ class RAGService:
                     use_batch=True
                 )
                 
-                print(f"✅ Reranking hoàn thành, {len(relevant_docs)} documents được chọn")
+                print(f"Reranking hoàn thành, {len(relevant_docs)} documents được chọn")
             
             # Tạo response từ Gemini AI
             if relevant_docs:
@@ -94,49 +94,13 @@ class RAGService:
                     "name_product": None
                 }
         except Exception as e:
-            print(f"❌ Lỗi trong query: {e}")
+            print(f"Lỗi trong query: {e}")
             return {
                 "question": question,
                 "answer": "Xin lỗi, đã xảy ra lỗi khi xử lý câu hỏi của bạn.",
                 "success": False
             }
 
-    def pipeline(self):
-        """Hàm luống RAG hoạt động"""
-
-        while True:
-            # Nhap cau hoi
-            question = input("Nhập câu hỏi: ")
-            if question.lower() == "exit":
-                break
-
-            # Tăng cường query
-            queery = self.gemini_service.enhance_query_with_history(question)
-
-            intent = self.gemini_service.build_promt_intent(queery)
-
-            print(f"Intent: {intent}")
-
-            if intent == "SPECIFIC_PRODUCT":
-                identify_key = self.gemini_service.identify_key_for_filter(queery)
-                result = self.query(queery, filters=identify_key, rerank_top_k=5, top_k=20)
-
-                if result["success"]:
-                    print(result["answer"])
-                    self.gemini_service.append_to_conversation(queery, result["answer"], intent, result["id_product"], result["name_product"])
-                else:
-                    print(result["answer"])
-                    self.gemini_service.append_to_conversation(queery, result["answer"], intent)
-            elif intent == "GENERAL_QUESTION":
-                result = self.query(queery, rerank_top_k=5, top_k=20, filters=None)
-
-                if result["success"]:
-                    print(result["answer"])
-                    self.gemini_service.append_to_conversation(queery, result["answer"], intent)
-                else:
-                    print(result["answer"])
-                    self.gemini_service.append_to_conversation(queery, result["answer"], intent)
-            
             
 
 

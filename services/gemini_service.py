@@ -9,8 +9,7 @@ class GeminiService:
         self.conversation_history = []
         self.brand_identity = Identity_Brand().brand
         self.category_identity = Identity_Category_Name().category_name
-        self.conversation_history_length = -3 # Lấy 3 lịch sử hội thoại gần nhất
-    
+        self.conversation_history_length = -3
     def generate_response(self, query: str, context_documents: List[Dict[str, Any]]) -> str:
         """Tạo response dựa trên query và context documents"""
         try:
@@ -42,34 +41,34 @@ class GeminiService:
             
             # Thông tin cơ bản về sản phẩm với payload data đầy đủ
             product_info = f"""
-CHUNK #{idx}:
-=============
-📋 THÔNG TIN SẢN PHẨM CHI TIẾT:
-   • Sản phẩm ID: {metadata.get('product_id', 'N/A')}
-   • Tên sản phẩm: {metadata.get('name', 'N/A')}
-   • Tên tiếng Anh: {metadata.get('english_name', 'N/A')}
-   • Thương hiệu: {metadata.get('brand', 'N/A')}
-   • Danh mục: {metadata.get('category_name', 'N/A')}
-   • Dung tích/Phiên bản: {metadata.get('data_variant', 'N/A')}
-   • Giá hiện tại: {metadata.get('price', 'N/A')} VND
-   • Đánh giá trung bình: {metadata.get('average_rating', 'N/A')}/5
-   • Tổng số đánh giá: {metadata.get('total_rating', 'N/A')} lượt
-   • Số lượng đã bán: {metadata.get('item_count_by', 'N/A')}
-   • Loại thông tin chunk: {metadata.get('type', 'N/A')}
+                        CHUNK #{idx}:
+                        =============
+                        📋 THÔNG TIN SẢN PHẨM CHI TIẾT:
+                        • Sản phẩm ID: {metadata.get('product_id', 'N/A')}
+                        • Tên sản phẩm: {metadata.get('name', 'N/A')}
+                        • Tên tiếng Anh: {metadata.get('english_name', 'N/A')}
+                        • Thương hiệu: {metadata.get('brand', 'N/A')}
+                        • Danh mục: {metadata.get('category_name', 'N/A')}
+                        • Dung tích/Phiên bản: {metadata.get('data_variant', 'N/A')}
+                        • Giá hiện tại: {metadata.get('price', 'N/A')} VND
+                        • Đánh giá trung bình: {metadata.get('average_rating', 'N/A')}/5
+                        • Tổng số đánh giá: {metadata.get('total_rating', 'N/A')} lượt
+                        • Số lượng đã bán: {metadata.get('item_count_by', 'N/A')}
+                        • Loại thông tin chunk: {metadata.get('type', 'N/A')}
 
-📊 ĐIỂM SỐ TÌM KIẾM & RERANKING:
-   • Vector Score (tìm kiếm ban đầu): {result.get('vector_score', result.get('score', 0)):.4f}
-   • Rerank Score (sau khi rerank): {result.get('rerank_score', result.get('score', 0)):.4f}
-   • Độ cải thiện từ reranking: {rerank_metadata.get('score_improvement', 0):+.4f}
-   • Thứ hạng cuối cùng: #{rerank_metadata.get('final_rank', idx)}
-   • Thay đổi thứ hạng: {rerank_metadata.get('rank_change', 0):+d} vị trí
+                        📊 ĐIỂM SỐ TÌM KIẾM & RERANKING:
+                        • Vector Score (tìm kiếm ban đầu): {result.get('vector_score', result.get('score', 0)):.4f}
+                        • Rerank Score (sau khi rerank): {result.get('rerank_score', result.get('score', 0)):.4f}
+                        • Độ cải thiện từ reranking: {rerank_metadata.get('score_improvement', 0):+.4f}
+                        • Thứ hạng cuối cùng: #{rerank_metadata.get('final_rank', idx)}
+                        • Thay đổi thứ hạng: {rerank_metadata.get('rank_change', 0):+d} vị trí
 
-📝 NỘI DUNG CHUNK:
-{result.get('text', 'N/A')}
+                        📝 NỘI DUNG CHUNK:
+                        {result.get('text', 'N/A')}
 
-🔍 ENRICHED CONTENT (được sử dụng trong reranking):
-{self._create_enriched_preview(result)}
-"""
+                        🔍 ENRICHED CONTENT (được sử dụng trong reranking):
+                        {self._create_enriched_preview(result)}
+                        """
             context_parts.append(product_info)
         
         return "\n" + "="*80 + "\n".join(context_parts) + "\n" + "="*80
@@ -148,7 +147,7 @@ CHUNK #{idx}:
         - "Giá của kem chống nắng Anessa là bao nhiêu?" -> Intent: SPECIFIC_PRODUCT
         - "Sản phẩm này dùng thế nào?" -> Intent: SPECIFIC_PRODUCT
         - "Xin chào, bạn có khỏe không?" -> Intent: GENERAL_QUESTION
-        - "Bạn có th��� gợi ý cho tôi một loại sữa rửa mặt không?" -> Intent: GENERAL_QUESTION
+        - "Bạn có thể gợi ý cho tôi một loại sữa rửa mặt không?" -> Intent: GENERAL_QUESTION
         - "Cảm ơn shop đã tư vấn" -> Intent: GENERAL_QUESTION
         - "Các sản phẩm về sửa rửa mặt" -> Intent: GENERAL_QUESTION
         """
@@ -306,7 +305,7 @@ CHUNK #{idx}:
             str: Câu hỏi đã được tăng cường với ngữ cảnh từ lịch sử hội thoại
         """
     
-        # Nếu không có lịch sử h���i thoại, trả về query gốc
+        # Nếu không có lịch sử hội thoại, trả về query gốc
         if not self.conversation_history:
             return current_query
         

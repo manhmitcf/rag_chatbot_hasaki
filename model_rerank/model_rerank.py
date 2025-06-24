@@ -33,7 +33,7 @@ class BGEReranker:
             print("✅ BGE Reranker model đã sẵn sàng!")
             
         except Exception as e:
-            print(f"❌ Lỗi khi tải model: {e}")
+            print(f"Lỗi khi tải model: {e}")
             raise e
     
     def rerank(self, query: str, documents: List[Dict[str, Any]], top_k: int = None) -> List[Dict[str, Any]]:
@@ -51,7 +51,7 @@ class BGEReranker:
         if not documents:
             return []
         
-        print(f"🔄 Đang rerank {len(documents)} documents...")
+        print(f"Đang rerank {len(documents)} documents...")
         
         try:
             # Tính rerank scores
@@ -106,7 +106,7 @@ class BGEReranker:
             return reranked_docs
             
         except Exception as e:
-            print(f"❌ Lỗi trong quá trình rerank: {e}")
+            print(f"Lỗi trong quá trình rerank: {e}")
             # Trả về documents gốc nếu có lỗi
             return documents
     
@@ -172,7 +172,7 @@ class BGEReranker:
             return float(score)
             
         except Exception as e:
-            print(f"⚠️ Lỗi khi tính score cho document: {e}")
+            print(f"Lỗi khi tính score cho document: {e}")
             return 0.0
     
     def rerank_with_batch(self, query: str, documents: List[Dict[str, Any]], 
@@ -214,7 +214,7 @@ class BGEReranker:
                 if 'score' in doc:
                     doc['vector_score'] = doc['score']
                 
-                # Cập nhật score ch��nh
+                # Cập nhật score sau khi rerank
                 doc['score'] = all_scores[i]
                 
                 # Thêm metadata chi tiết cho chunk
@@ -247,7 +247,7 @@ class BGEReranker:
             if top_k is not None:
                 reranked_docs = reranked_docs[:top_k]
             
-            print(f"✅ Hoàn thành batch rerank, trả về {len(reranked_docs)} documents")
+            print(f"Hoàn thành batch rerank, trả về {len(reranked_docs)} documents")
             
             # In thông tin chi tiết về reranking
             self._print_rerank_details(reranked_docs)
@@ -255,7 +255,7 @@ class BGEReranker:
             return reranked_docs
             
         except Exception as e:
-            print(f"❌ Lỗi trong batch rerank: {e}")
+            print(f"Lỗi trong batch rerank: {e}")
             return documents
     
     def _compute_batch_scores(self, query: str, documents: List[Dict[str, Any]]) -> List[float]:
@@ -300,7 +300,7 @@ class BGEReranker:
             return scores.tolist()
             
         except Exception as e:
-            print(f"⚠️ Lỗi trong batch scoring: {e}")
+            print(f"Lỗi trong batch scoring: {e}")
             return [0.0] * len(documents)
     
     def compare_scores(self, documents: List[Dict[str, Any]]) -> None:
@@ -310,7 +310,7 @@ class BGEReranker:
         Args:
             documents: Danh sách documents đã rerank
         """
-        print("\n📊 SO SÁNH SCORES:")
+        print("\nSO SÁNH SCORES:")
         print("-" * 80)
         print(f"{'#':<3} {'Vector Score':<12} {'Rerank Score':<12} {'Improvement':<12} {'Document':<30}")
         print("-" * 80)
@@ -339,29 +339,29 @@ class BGEReranker:
             metadata = doc.get('rerank_metadata', {})
             product_info = metadata.get('product_info', {})
             
-            print(f"\n📄 CHUNK #{i}:")
-            print(f"   🏷️  Sản phẩm: {product_info.get('product_name', 'N/A')} (ID: {product_info.get('product_id', 'N/A')})")
-            print(f"   🏢 Thương hiệu: {product_info.get('brand', 'N/A')}")
-            print(f"   📂 Danh mục: {product_info.get('category', 'N/A')}")
-            print(f"   📝 Loại chunk: {product_info.get('chunk_type', 'N/A')}")
-            print(f"   📏 Độ dài: {metadata.get('chunk_length', 0)} ký tự")
+            print(f"\nCHUNK #{i}:")
+            print(f"Sản phẩm: {product_info.get('product_name', 'N/A')} (ID: {product_info.get('product_id', 'N/A')})")
+            print(f"Thương hiệu: {product_info.get('brand', 'N/A')}")
+            print(f"Danh mục: {product_info.get('category', 'N/A')}")
+            print(f"Loại chunk: {product_info.get('chunk_type', 'N/A')}")
+            print(f"Độ dài: {metadata.get('chunk_length', 0)} ký tự")
             
-            print(f"   📊 ĐIỂM SỐ:")
+            print(f"ĐIỂM SỐ:")
             print(f"      • Vector Score: {metadata.get('vector_score', 0.0):.4f}")
             print(f"      • Rerank Score: {metadata.get('rerank_score', 0.0):.4f}")
             print(f"      • Cải thiện: {metadata.get('score_improvement', 0.0):+.4f}")
             
-            print(f"   🎯 THỨ HẠNG:")
+            print(f"THỨ HẠNG:")
             print(f"      • Thứ hạng ban đầu: #{metadata.get('original_rank', 'N/A')}")
             print(f"      • Thứ hạng cuối: #{metadata.get('final_rank', 'N/A')}")
             print(f"      • Thay đổi: {metadata.get('rank_change', 0):+d} vị trí")
             
             # Hiển thị một phần nội dung chunk
             text_preview = doc.get('text', '')[:150] + "..." if len(doc.get('text', '')) > 150 else doc.get('text', '')
-            print(f"   📖 Nội dung: {text_preview}")
+            print(f"Nội dung: {text_preview}")
             
             if metadata.get('batch_processed'):
-                print(f"   ⚡ Xử lý batch: Có (batch_size={metadata.get('batch_size', 'N/A')})")
+                print(f"Xử lý batch: Có (batch_size={metadata.get('batch_size', 'N/A')})")
             
             print("-" * 120)
         
@@ -370,7 +370,7 @@ class BGEReranker:
             avg_improvement = sum(doc.get('rerank_metadata', {}).get('score_improvement', 0) for doc in documents) / len(documents)
             positive_improvements = sum(1 for doc in documents if doc.get('rerank_metadata', {}).get('score_improvement', 0) > 0)
             
-            print(f"\n📈 THỐNG KÊ TỔNG QUAN:")
+            print(f"\nTHỐNG KÊ TỔNG QUAN:")
             print(f"   • Tổng số chunks: {len(documents)}")
             print(f"   • Cải thiện trung bình: {avg_improvement:+.4f}")
             print(f"   • Chunks được cải thiện: {positive_improvements}/{len(documents)} ({positive_improvements/len(documents)*100:.1f}%)")
@@ -435,7 +435,7 @@ class BGEReranker:
             return enriched_content
             
         except Exception as e:
-            print(f"⚠️ Lỗi khi tạo enriched content: {e}")
+            print(f"Lỗi khi tạo enriched content: {e}")
             return doc.get('text', '')
 
 
@@ -477,7 +477,7 @@ class RerankService:
             reranked_results = self.reranker.rerank_with_batch(
                 query=query,
                 documents=search_results,
-                batch_size=8,
+                batch_size=32,
                 top_k=top_k
             )
         else:

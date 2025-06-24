@@ -140,14 +140,14 @@ def main():
                 st.markdown(message["content"])
                 
                 # Hiển thị thông tin bổ sung nếu có
-                if message["role"] == "assistant" and "metadata" in message:
-                    metadata = message["metadata"]
-                    if metadata.get("intent"):
-                        st.caption(f"🎯 Phân loại: {metadata['intent']}")
-                    if metadata.get("id_product"):
-                        st.caption(f"🆔 ID sản phẩm: {metadata['id_product']}")
-                    if metadata.get("name_product"):
-                        st.caption(f"📦 Tên sản phẩm: {metadata['name_product']}")
+                # if message["role"] == "assistant" and "metadata" in message:
+                #     metadata = message["metadata"]
+                #     if metadata.get("intent"):
+                #         st.caption(f"🎯 Phân loại: {metadata['intent']}")
+                #     if metadata.get("id_product"):
+                #         st.caption(f"🆔 ID sản phẩm: {metadata['id_product']}")
+                #     if metadata.get("name_product"):
+                #         st.caption(f"📦 Tên sản phẩm: {metadata['name_product']}")
     
     # Input cho tin nhắn mới
     if prompt := st.chat_input("Nhập câu hỏi của bạn..."):
@@ -174,15 +174,15 @@ def main():
                 
                 # Hiển thị thông tin metadata
                 metadata = {}
-                if response.get("intent"):
-                    st.caption(f"🎯 Phân loại: {response['intent']}")
-                    metadata["intent"] = response["intent"]
-                if response.get("id_product"):
-                    st.caption(f"🆔 ID sản phẩm: {response['id_product']}")
-                    metadata["id_product"] = response["id_product"]
-                if response.get("name_product"):
-                    st.caption(f"📦 Tên sản phẩm: {response['name_product']}")
-                    metadata["name_product"] = response["name_product"]
+                # if response.get("intent"):
+                #     st.caption(f"🎯 Phân loại: {response['intent']}")
+                #     metadata["intent"] = response["intent"]
+                # if response.get("id_product"):
+                #     st.caption(f"🆔 ID sản phẩm: {response['id_product']}")
+                #     metadata["id_product"] = response["id_product"]
+                # if response.get("name_product"):
+                #     st.caption(f"📦 Tên sản phẩm: {response['name_product']}")
+                #     metadata["name_product"] = response["name_product"]
                 
                 # Thêm vào lịch sử
                 message_data = {

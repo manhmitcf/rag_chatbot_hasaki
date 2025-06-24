@@ -30,7 +30,7 @@ class BGEReranker:
             self.model.to(self.device)
             self.model.eval()
             
-            print("✅ BGE Reranker model đã sẵn sàng!")
+            print("BGE Reranker model đã sẵn sàng!")
             
         except Exception as e:
             print(f"Lỗi khi tải model: {e}")
@@ -98,7 +98,7 @@ class BGEReranker:
             if top_k is not None:
                 reranked_docs = reranked_docs[:top_k]
             
-            print(f"✅ Hoàn thành rerank, trả về {len(reranked_docs)} documents")
+            print(f"Hoàn thành rerank, trả về {len(reranked_docs)} documents")
             
             # In thông tin chi tiết về reranking
             self._print_rerank_details(reranked_docs)
@@ -192,7 +192,7 @@ class BGEReranker:
         if not documents:
             return []
         
-        print(f"🔄 Đang rerank {len(documents)} documents với batch_size={batch_size}")
+        print(f"Đang rerank {len(documents)} documents với batch_size={batch_size}")
         
         try:
             all_scores = []
@@ -332,7 +332,7 @@ class BGEReranker:
         Args:
             documents: Danh sách documents đã được rerank
         """
-        print("\n🔍 CHI TIẾT RERANKING CHO TỪNG CHUNK:")
+        print("\nCHI TIẾT RERANKING CHO TỪNG CHUNK:")
         print("=" * 120)
         
         for i, doc in enumerate(documents[:5], 1):  # Hiển thị top 5 chunks

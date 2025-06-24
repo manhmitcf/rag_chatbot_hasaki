@@ -13,7 +13,7 @@ import os
 
 def run_api_server():
     """Chạy FastAPI server"""
-    print("🚀 Đang khởi động FastAPI server...")
+    print("Đang khởi động FastAPI server...")
     try:
         subprocess.run([
             sys.executable, "-m", "uvicorn", 
@@ -23,13 +23,13 @@ def run_api_server():
             "--reload"
         ], check=True)
     except KeyboardInterrupt:
-        print("\n⏹️ FastAPI server đã dừng")
+        print("\nFastAPI server đã dừng")
     except Exception as e:
-        print(f"❌ Lỗi chạy FastAPI server: {e}")
+        print(f"Lỗi chạy FastAPI server: {e}")
 
 def run_streamlit_app():
     """Chạy Streamlit app"""
-    print("🌐 Đang khởi động Streamlit app...")
+    print("Đang khởi động Streamlit app...")
     time.sleep(5)  # Đợi API server khởi động
     try:
         subprocess.run([
@@ -38,13 +38,13 @@ def run_streamlit_app():
             "--server.port", "8501"
         ], check=True)
     except KeyboardInterrupt:
-        print("\n⏹️ Streamlit app đã dừng")
+        print("\nStreamlit app đã dừng")
     except Exception as e:
-        print(f"❌ Lỗi chạy Streamlit app: {e}")
+        print(f"Lỗi chạy Streamlit app: {e}")
 
 def main():
     """Chạy cả hai server"""
-    print("🌸 Hasaki RAG Chatbot - Khởi động servers")
+    print("Hasaki RAG Chatbot - Khởi động servers")
     print("=" * 50)
     
     # Tạo threads cho mỗi server
@@ -58,18 +58,18 @@ def main():
         # Khởi động Streamlit app
         streamlit_thread.start()
         
-        print("\n✅ Cả hai server đã được khởi động!")
-        print("🔗 FastAPI: http://localhost:8000")
-        print("🔗 Streamlit: http://localhost:8501")
-        print("\n⌨️  Nhấn Ctrl+C để dừng tất cả servers")
+        print("\nCả hai server đã được khởi động!")
+        print("FastAPI: http://localhost:8000")
+        print("Streamlit: http://localhost:8501")
+        print("\n Nhấn Ctrl+C để dừng tất cả servers")
         
         # Đợi các threads
         api_thread.join()
         streamlit_thread.join()
         
     except KeyboardInterrupt:
-        print("\n\n👋 Đang dừng tất cả servers...")
-        print("✅ Đã dừng thành công!")
+        print("\n\nĐang dừng tất cả servers...")
+        print("Đã dừng thành công!")
 
 if __name__ == "__main__":
     main()

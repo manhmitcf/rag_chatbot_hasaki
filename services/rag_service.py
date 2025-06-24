@@ -14,9 +14,9 @@ class RAGService:
             try:
                 print("Đang khởi tạo Rerank Service...")
                 self.rerank_service = RerankService()
-                print("✅ Rerank Service đã sẵn sàng!")
+                print("Rerank Service đã sẵn sàng!")
             except Exception as e:
-                print("📝 Hệ thống sẽ hoạt động không có reranking")
+                print("Hệ thống sẽ hoạt động không có reranking")
                 self.use_rerank = False
                 self.rerank_service = None
         else:
@@ -68,7 +68,7 @@ class RAGService:
             
             # Tạo response từ Gemini AI
             if relevant_docs:
-                print("🤖 Đang tạo response từ Gemini AI...")
+                print("Đang tạo response từ Gemini AI...")
                 answer = self.gemini_service.generate_response(question, relevant_docs)
                 
                 # Lấy thông tin sản phẩm từ document đầu tiên (có score cao nhất)

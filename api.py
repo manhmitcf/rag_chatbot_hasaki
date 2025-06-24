@@ -56,18 +56,18 @@ async def startup_event():
     """Khởi tạo RAG Service khi server start"""
     global rag_service
     try:
-        logger.info("🚀 Đang khởi tạo RAG Service...")
+        logger.info("Đang khởi tạo RAG Service...")
         rag_service = RAGService(use_rerank=True)
-        logger.info("✅ RAG Service đã sẵn sàng!")
+        logger.info("RAG Service đã sẵn sàng!")
     except Exception as e:
-        logger.error(f"❌ Lỗi khởi tạo RAG Service: {str(e)}")
+        logger.error(f"Lỗi khởi tạo RAG Service: {str(e)}")
         raise e
 
 @app.get("/")
 async def root():
     """Health check endpoint"""
     return {
-        "message": "🌸 Hasaki RAG Chatbot API đang hoạt động!",
+        "message": "Hasaki RAG Chatbot API đang hoạt động!",
         "status": "healthy",
         "version": "1.0.0"
     }
@@ -118,27 +118,27 @@ async def chat(request: ChatRequest):
                 error="Empty message"
             )
         
-        logger.info(f"📝 Nhận câu hỏi: {user_input}")
+        logger.info(f"Nhận câu hỏi: {user_input}")
         
         # Tăng cường query với lịch sử hội thoại
         enhanced_query = rag_service.gemini_service.enhance_query_with_history(user_input)
         
         # Phân tích ý định
         intent = rag_service.gemini_service.build_promt_intent(enhanced_query)
-        logger.info(f"🎯 Phân loại: {intent}")
+        logger.info(f"Phân loại: {intent}")
         
         # Xử lý theo ý định
         if intent == "SPECIFIC_PRODUCT":
             # Xác định filter cho sản phẩm cụ thể
             filters = rag_service.gemini_service.identify_key_for_filter(enhanced_query)
-            logger.info(f"🔍 Filters được tạo: {filters}")
+            logger.info(f"Filters được tạo: {filters}")
             
             # Thử tìm kiếm với filter trước
             result = rag_service.query(enhanced_query, filters=filters, rerank_top_k=5, top_k=20)
             
             # Nếu không tìm thấy kết quả với filter, thử không filter
             if result["success"] and result["answer"] == "Xin lỗi, tôi không tìm thấy thông tin phù hợp để trả lời câu hỏi của bạn.":
-                logger.info("⚠️ Không tìm thấy với filter, thử tìm kiếm không filter...")
+                logger.info("Không tìm thấy với filter, thử tìm kiếm không filter...")
                 result = rag_service.query(enhanced_query, filters=None, rerank_top_k=5, top_k=20)
             
             if result["success"]:
@@ -211,7 +211,7 @@ async def chat(request: ChatRequest):
             )
             
     except Exception as e:
-        logger.error(f"❌ Lỗi xử lý chat: {str(e)}")
+        logger.error(f"Lỗi xử lý chat: {str(e)}")
         return ChatResponse(
             success=False,
             answer="Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại!",
@@ -237,7 +237,7 @@ async def clear_history():
             "message": "Đã xóa lịch sử hội thoại"
         }
     except Exception as e:
-        logger.error(f"❌ Lỗi xóa lịch sử: {str(e)}")
+        logger.error(f"Lỗi xóa lịch sử: {str(e)}")
         return {
             "success": False,
             "message": "Lỗi khi xóa lịch sử hội thoại",

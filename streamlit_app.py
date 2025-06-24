@@ -14,7 +14,7 @@ import time
 
 # Cấu hình trang
 st.set_page_config(
-    page_title="🌸 Hasaki RAG Chatbot",
+    page_title="Hasaki RAG Chatbot",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="expanded"

@@ -400,7 +400,9 @@ GET /health
 - 🔍 Advanced reranking system
 - 📊 Comprehensive API documentation
 
----
+## Contributors
+- [@manhmitcf](https://github.com/manhmitcf): Tran Van Manh
+- [@nauthen](https://github.com/nauthen): Trinh Nam Thuan
 
 <div align="center">
   <p>Made with ❤️ for Vietnamese cosmetics consultation</p>

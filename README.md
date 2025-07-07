@@ -403,6 +403,7 @@ GET /health
 ## Contributors
 - [@manhmitcf](https://github.com/manhmitcf): Tran Van Manh
 - [@nauthen](https://github.com/nauthen): Trinh Nam Thuan
+- [@hoangphihung2004](https://github.com/hoangphihung2004): Hoang Phi Hung
 
 <div align="center">
   <p>Made with ❤️ for Vietnamese cosmetics consultation</p>

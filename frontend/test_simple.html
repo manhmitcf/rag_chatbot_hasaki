@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Link Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div style="padding: 20px;">
+        <h2>🔗 Simple Link Test</h2>
+        
+        <div style="margin: 20px 0;">
+            <h3>Raw Markdown:</h3>
+            <div style="background: #f5f5f5; padding: 10px; font-family: monospace;">
+                [Sữa Rửa Mặt CeraVe](https://hasaki.vn/san-pham/sua-rua-mat-cerave.html)
+            </div>
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <h3>Converted:</h3>
+            <div id="result" style="background: #e8f5e8; padding: 10px;"></div>
+        </div>
+        
+        <button onclick="convert()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px;">
+            Convert Now
+        </button>
+    </div>
+
+    <script>
+        function formatMarkdownLinks(text) {
+            console.log('🔧 formatMarkdownLinks called with:', text);
+            
+            const markdownLinkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/gi;
+            
+            return text.replace(markdownLinkPattern, (match, linkText, url) => {
+                console.log('✅ Found match:', { match, linkText, url });
+                
+                if (url.includes('hasaki.vn')) {
+                    const result = `<a href="${url}" target="_blank" class="markdown-product-link" title="Xem sản phẩm trên Hasaki">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>${linkText}</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>`;
+                    console.log('🎯 Generated HTML:', result);
+                    return result;
+                }
+                return match;
+            });
+        }
+        
+        function convert() {
+            const input = '[Sữa Rửa Mặt CeraVe](https://hasaki.vn/san-pham/sua-rua-mat-cerave.html)';
+            console.log('🚀 Starting conversion...');
+            
+            const output = formatMarkdownLinks(input);
+            document.getElementById('result').innerHTML = output;
+            
+            console.log('✅ Conversion complete');
+        }
+        
+        // Auto convert on load
+        window.onload = convert;
+    </script>
+</body>
+</html>

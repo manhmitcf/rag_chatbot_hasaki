@@ -1,0 +1,42 @@
+# Core Dependencies
+python-dotenv
+
+# AI/ML Libraries
+google-generativeai
+sentence-transformers
+transformers
+torch
+numpy
+langchain
+langchain-google-genai
+langchain-community
+langchain-core
+
+
+# Vector Database
+qdrant-client
+pymongo
+
+# Reranking Model Dependencies
+accelerate
+tokenizers
+safetensors
+
+# Utility Libraries
+typing-extensions
+tqdm
+requests
+
+# Web Framework
+fastapi
+uvicorn
+streamlit
+pyngrok
+
+# Development Dependencies (Optional)
+pytest
+black
+flake8
+
+# System Dependencies
+psutil

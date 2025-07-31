@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasaki Beauty AI - Chatbot Tư Vấn Mỹ Phẩm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-sparkles"></i>
+                    <span>Hasaki Beauty AI</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active">Tư vấn</a>
+                    <a href="#" class="nav-link">Sản phẩm</a>
+                    <a href="#" class="nav-link">Hướng dẫn</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="clearChat">
+                        <i class="fas fa-trash"></i>
+                        Xóa lịch sử
+                    </button>
+                    <div class="status-indicator" id="apiStatus">
+                        <div class="status-dot"></div>
+                        <span>Đang kết nối...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="chat-container">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <div class="chat-title">
+                        <h1>🌸 Chuyên gia tư vấn mỹ phẩm AI</h1>
+                        <p>Tôi sẽ giúp bạn tìm kiếm và tư vấn các sản phẩm mỹ phẩm phù hợp nhất</p>
+                    </div>
+                    <div class="chat-stats" id="chatStats">
+                        <div class="stat">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">Tin nhắn</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">Sản phẩm tư vấn</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Welcome Message -->
+                    <div class="message bot-message welcome-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-text">
+                                <h3>👋 Xin chào! Tôi là AI tư vấn mỹ phẩm của Hasaki</h3>
+                                <p>Tôi có thể giúp bạn:</p>
+                                <ul>
+                                    <li>🔍 Tìm kiếm sản phẩm mỹ phẩm</li>
+                                    <li>💄 Tư vấn chăm sóc da</li>
+                                    <li>💰 So sánh giá và chất lượng</li>
+                                    <li>⭐ Đánh giá sản phẩm</li>
+                                </ul>
+                                <p><strong>Hãy đặt câu hỏi để bắt đầu nhé! 😊</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions" id="quickActions">
+                    <h4>💡 Câu hỏi gợi ý:</h4>
+                    <div class="quick-buttons">
+                        <button class="quick-btn" data-text="Tư vấn kem chống nắng cho da dầu">
+                            <i class="fas fa-sun"></i>
+                            Kem chống nắng cho da dầu
+                        </button>
+                        <button class="quick-btn" data-text="Sữa rửa mặt nào tốt cho da nhạy cảm?">
+                            <i class="fas fa-droplet"></i>
+                            Sữa rửa mặt da nhạy cảm
+                        </button>
+                        <button class="quick-btn" data-text="Serum vitamin C nào được đánh giá cao?">
+                            <i class="fas fa-flask"></i>
+                            Serum vitamin C
+                        </button>
+                        <button class="quick-btn" data-text="Kem dưỡng ẩm cho da khô mùa đông">
+                            <i class="fas fa-snowflake"></i>
+                            Kem dưỡng ẩm mùa đông
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="messageInput" 
+                                placeholder="Nhập câu hỏi về mỹ phẩm..."
+                                rows="1"
+                                maxlength="500"
+                            ></textarea>
+                            <div class="input-actions">
+                                <button class="btn-attach" title="Đính kèm">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button class="btn-send" id="sendButton" title="Gửi tin nhắn">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-footer">
+                            <span class="char-count">0/500</span>
+                            <span class="typing-indicator" id="typingIndicator">
+                                <i class="fas fa-robot"></i>
+                                AI đang suy nghĩ...
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Có lỗi xảy ra</h3>
+                <button class="modal-close" id="closeErrorModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">Đã xảy ra lỗi khi xử lý yêu cầu của bạn.</p>
+                <div class="error-actions">
+                    <button class="btn-primary" id="retryButton">
+                        <i class="fas fa-redo"></i>
+                        Thử lại
+                    </button>
+                    <button class="btn-secondary" id="contactSupport">
+                        <i class="fas fa-headset"></i>
+                        Liên hệ hỗ trợ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
